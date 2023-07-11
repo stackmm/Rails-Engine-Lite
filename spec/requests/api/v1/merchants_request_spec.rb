@@ -56,7 +56,7 @@ describe "Merchants API" do
     get "/api/v1/merchants/#{merchant.id}/items"
 
     items = JSON.parse(response.body, symbolize_names: true)
-    require 'pry'; binding.pry
+
     expect(response).to be_successful
 
     expect(items[:data]).to be_an(Array)
