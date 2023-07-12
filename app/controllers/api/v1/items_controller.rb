@@ -1,4 +1,6 @@
 class Api::V1::ItemsController < ApplicationController
+  before_action :verify_merchant, only: [:create, :update]
+
   def index
     render json: ItemSerializer.new(Item.all)
   end
@@ -8,7 +10,13 @@ class Api::V1::ItemsController < ApplicationController
   end
 
   def create
-    render json: ItemSerializer.new(Item.create(item_params)), status: 201
+    item = Item.new(item_params)
+
+    if item.save
+      render json: ItemSerializer.new(item), status: 201
+    else
+      render json: item.errors, status: 400
+    end
   end
 
   def update
@@ -20,8 +28,15 @@ class Api::V1::ItemsController < ApplicationController
   end
 
   private
-
   def item_params
     params.require(:item).permit(:name, :description, :unit_price, :merchant_id)
+  end
+
+  def verify_merchant 
+    if Merchant.exists?(item_params[:merchant_id]) || item_params[:merchant_id].nil?
+      return
+    else
+      render json: {error: "Merchant not found"}, status: 404
+    end
   end
 end
