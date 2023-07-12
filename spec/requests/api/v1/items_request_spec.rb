@@ -222,7 +222,7 @@ RSpec.describe "Items API", type: :request do
   # find all ITEMS (in an array of objects) based on search criteria (case insensitive)
   # returns a 404 error if no matches are found
   describe "/api/v1/items/find_all" do
-    it "can find all items which match a search term" do
+    it "can find all items which match a search by name" do
       item1 = create(:item, name: "Gold Potatoe")
       item2 = create(:item, name: "Silver potatoe")
       item3 = create(:item, name: "Bronze Egg")
@@ -233,6 +233,59 @@ RSpec.describe "Items API", type: :request do
 
       expect(response).to be_successful
       expect(response.status).to eq(200)
+
+      items = JSON.parse(response.body, symbolize_names: true)
+
+      expect(items[:data]).to be_an(Array)
+      expect(items[:data].count).to eq(2)
+      expect(items[:data][0][:attributes][:name]).to eq(item1.name)
+      expect(items[:data][1][:attributes][:name]).to eq(item2.name)
+    end
+
+    it "can find all items when searched by min_price" do
+      item1 = create(:item, unit_price: 1.50)
+      item2 = create(:item, unit_price: 25.20)
+      item3 = create(:item, unit_price: 55.00)
+      item4 = create(:item, unit_price: 75.00)
+      item5 = create(:item, unit_price: 100.00)
+
+      get "/api/v1/items/find_all?min_price=55"
+
+      expect(response).to be_successful
+      expect(response.status).to eq(200)
+
+      items = JSON.parse(response.body, symbolize_names: true)
+
+      expect(items[:data]).to be_an(Array)
+      expect(items[:data].count).to eq(3)
+      expect(items[:data][0][:attributes][:unit_price]).to eq(item3.unit_price)
+      expect(items[:data][1][:attributes][:unit_price]).to eq(item4.unit_price)
+      expect(items[:data][2][:attributes][:unit_price]).to eq(item5.unit_price)
+    end
+
+    it "can find all items when searched by max_price" do
+      item1 = create(:item, unit_price: 1.50)
+      item2 = create(:item, unit_price: 25.20)
+      item3 = create(:item, unit_price: 55.00)
+      item4 = create(:item, unit_price: 75.00)
+      item5 = create(:item, unit_price: 100.00)
+
+      get "/api/v1/items/find_all?max_price=55"
+
+      expect(response).to be_successful
+      expect(response.status).to eq(200)
+
+      items = JSON.parse(response.body, symbolize_names: true)
+
+      expect(items[:data]).to be_an(Array)
+      expect(items[:data].count).to eq(3)
+      expect(items[:data][0][:attributes][:unit_price]).to eq(item1.unit_price)
+      expect(items[:data][1][:attributes][:unit_price]).to eq(item2.unit_price)
+      expect(items[:data][2][:attributes][:unit_price]).to eq(item3.unit_price)
+    end
+
+    xit "can find all items when searched by min_price AND max_price" do
+
     end
   end
 end
