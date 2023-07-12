@@ -222,8 +222,17 @@ RSpec.describe "Items API", type: :request do
   # find all ITEMS (in an array of objects) based on search criteria (case insensitive)
   # returns a 404 error if no matches are found
   describe "/api/v1/items/find_all" do
-    xit "can find all merchants which match a search term" do
+    it "can find all items which match a search term" do
+      item1 = create(:item, name: "Gold Potatoe")
+      item2 = create(:item, name: "Silver potatoe")
+      item3 = create(:item, name: "Bronze Egg")
+      item4 = create(:item, name: "Titanium egg")
+      item5 = create(:item, name: "Platinum Toaster")
 
+      get "/api/v1/items/find_all?name=potatoe"
+
+      expect(response).to be_successful
+      expect(response.status).to eq(200)
     end
   end
 end
