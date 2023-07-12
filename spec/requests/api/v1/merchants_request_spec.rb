@@ -102,11 +102,6 @@ describe "Merchants API", type: :request do
     end
   end
 
-  # find one MERCHANT based on search criteria
-  # it should return the first object in the database in case-insensitive alphabetical order if multiple matches are found
-  # it allows the user to specify a 'name' query parameter
-  # can send "?name=ring" and it will search the name field in the database table
-  # the search data in the "name" query paramater should require the database to do a case-insensitive search for text fields
   describe "/api/v1/merchants/find" do
     it "can find a merchant which matches a search term" do
       merchant1 = create(:merchant, name: "Bob's Store")
@@ -130,12 +125,25 @@ describe "Merchants API", type: :request do
       expect(merchant[:data][:attributes]).to have_key(:name)
       expect(merchant[:data][:attributes][:name]).to eq(merchant1.name)
     end
-  end
 
-  # find all ITEMS based on search criteria
-  describe "/api/v1/items/find_all" do
-    xit "can find all merchants which match a search term" do
+    it "rejects a request for a merchant if the search term is not found (merchant does not exist)" do
+      merchant1 = create(:merchant, name: "Bob's Burgers")
+      merchant2 = create(:merchant, name: "Walmart")
 
+      get "/api/v1/merchants/find?name=store"
+
+      expect(response).to_not be_successful
+      expect(response.status).to eq(404)
+    end
+
+    it "rejects a request for a merchant if the search term is not provided" do
+      merchant1 = create(:merchant, name: "Bob's Burgers")
+      merchant2 = create(:merchant, name: "Walmart")
+
+      get "/api/v1/merchants/find"
+
+      expect(response).to_not be_successful
+      expect(response.status).to eq(400)
     end
   end
 end

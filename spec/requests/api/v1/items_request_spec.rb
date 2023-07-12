@@ -218,4 +218,12 @@ RSpec.describe "Items API", type: :request do
       expect(merchant_data[:error]).to eq("Item not found")
     end
   end
+
+  # find all ITEMS (in an array of objects) based on search criteria (case insensitive)
+  # returns a 404 error if no matches are found
+  describe "/api/v1/items/find_all" do
+    xit "can find all merchants which match a search term" do
+
+    end
+  end
 end
