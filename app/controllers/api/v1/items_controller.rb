@@ -33,10 +33,7 @@ class Api::V1::ItemsController < ApplicationController
   end
 
   def verify_merchant 
-    if Merchant.exists?(item_params[:merchant_id]) || item_params[:merchant_id].nil?
-      return
-    else
-      render json: {error: "Merchant not found"}, status: 404
-    end
+    return if Merchant.exists?(item_params[:merchant_id]) || item_params[:merchant_id].nil?
+    render json: {error: "Merchant not found"}, status: 404
   end
 end
