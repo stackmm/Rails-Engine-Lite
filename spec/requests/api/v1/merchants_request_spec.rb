@@ -84,4 +84,14 @@ describe "Merchants API" do
       expect(item[:attributes][:merchant_id]).to be_an(Integer)
     end
   end
+
+  it "rejects a request for items if merchant does not exist" do
+    get "/api/v1/merchants/1/items"
+
+    items = JSON.parse(response.body, symbolize_names: true)
+
+    expect(response).to_not be_successful
+    expect(response.status).to eq(404)
+    expect(items[:error]).to eq("Merchant not found")
+  end
 end
