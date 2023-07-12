@@ -101,12 +101,12 @@ RSpec.describe "Items API", type: :request do
     end
 
     it "rejects a request to create an item if the merchant does not exist" do
-      item_params = ({
+      item_params = {
                       name: "Gold Potatoe",
                       description: "A potatoe made of gold",
                       unit_price: 99.99,
                       merchant_id: 1
-                    })
+                    }
       
       headers = {"CONTENT_TYPE" => "application/json"}
   
@@ -117,11 +117,11 @@ RSpec.describe "Items API", type: :request do
     end
 
     it "rejects a request to create an item if params are incomplete" do
-      item_params = ({
+      item_params = {
                       name: "Gold Potatoe",
                       description: "A potatoe made of gold",
                       merchant_id: create(:merchant).id
-                    })
+                    }
       
       headers = {"CONTENT_TYPE" => "application/json"}
   
