@@ -38,6 +38,7 @@ describe "Merchants API", type: :request do
       merchant = JSON.parse(response.body, symbolize_names: true)
   
       expect(response).to be_successful
+      expect(response.status).to eq(200)
   
       expect(merchant[:data]).to have_key(:id)
       expect(merchant[:data][:id]).to be_an(String)
@@ -98,6 +99,51 @@ describe "Merchants API", type: :request do
       expect(response).to_not be_successful
       expect(response.status).to eq(404)
       expect(items[:error]).to eq("Merchant not found")
+    end
+  end
+
+  describe "/api/v1/merchants/find" do
+    it "can find a merchant which matches a search term" do
+      merchant1 = create(:merchant, name: "Bob's Store")
+      merchant2 = create(:merchant, name: "Mike's Store")
+      merchant3 = create(:merchant, name: "Tom's Store")
+
+      get "/api/v1/merchants/find?name=store"
+
+      expect(response).to be_successful
+      expect(response.status).to eq(200)
+
+      merchant = JSON.parse(response.body, symbolize_names: true)
+
+      expect(merchant[:data]).to have_key(:id)
+      expect(merchant[:data][:id]).to be_an(String)
+  
+      expect(merchant[:data]).to have_key(:type)
+      expect(merchant[:data][:type]).to be_an(String)
+  
+      expect(merchant[:data]).to have_key(:attributes)
+      expect(merchant[:data][:attributes]).to have_key(:name)
+      expect(merchant[:data][:attributes][:name]).to eq(merchant1.name)
+    end
+
+    it "rejects a request for a merchant if the search term is not found (merchant does not exist)" do
+      merchant1 = create(:merchant, name: "Bob's Burgers")
+      merchant2 = create(:merchant, name: "Walmart")
+
+      get "/api/v1/merchants/find?name=store"
+
+      expect(response).to_not be_successful
+      expect(response.status).to eq(404)
+    end
+
+    it "rejects a request for a merchant if the search term is not provided" do
+      merchant1 = create(:merchant, name: "Bob's Burgers")
+      merchant2 = create(:merchant, name: "Walmart")
+
+      get "/api/v1/merchants/find"
+
+      expect(response).to_not be_successful
+      expect(response.status).to eq(400)
     end
   end
 end

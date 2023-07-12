@@ -101,12 +101,12 @@ RSpec.describe "Items API", type: :request do
     end
 
     it "rejects a request to create an item if the merchant does not exist" do
-      item_params = ({
+      item_params = {
                       name: "Gold Potatoe",
                       description: "A potatoe made of gold",
                       unit_price: 99.99,
                       merchant_id: 1
-                    })
+                    }
       
       headers = {"CONTENT_TYPE" => "application/json"}
   
@@ -117,11 +117,11 @@ RSpec.describe "Items API", type: :request do
     end
 
     it "rejects a request to create an item if params are incomplete" do
-      item_params = ({
+      item_params = {
                       name: "Gold Potatoe",
                       description: "A potatoe made of gold",
                       merchant_id: create(:merchant).id
-                    })
+                    }
       
       headers = {"CONTENT_TYPE" => "application/json"}
   
@@ -216,6 +216,14 @@ RSpec.describe "Items API", type: :request do
       expect(response).to_not be_successful
       expect(response.status).to eq(404)
       expect(merchant_data[:error]).to eq("Item not found")
+    end
+  end
+
+  # find all ITEMS (in an array of objects) based on search criteria (case insensitive)
+  # returns a 404 error if no matches are found
+  describe "/api/v1/items/find_all" do
+    xit "can find all merchants which match a search term" do
+
     end
   end
 end
