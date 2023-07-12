@@ -57,7 +57,8 @@ describe "Merchants API" do
     items = JSON.parse(response.body, symbolize_names: true)
 
     expect(response).to be_successful
-
+    expect(response.status).to eq(200)
+    
     expect(items[:data]).to be_an(Array)
     expect(items[:data].count).to eq(3)
 
