@@ -196,4 +196,14 @@ RSpec.describe "Items API" do
     expect(merchant_data[:data][:attributes]).to have_key(:name)
     expect(merchant_data[:data][:attributes][:name]).to be_an(String)
   end
+
+  it "rejects a request for merchant data if the item does not exist" do
+    get "/api/v1/items/1/merchant"
+
+    merchant_data = JSON.parse(response.body, symbolize_names: true)
+
+    expect(response).to_not be_successful
+    expect(response.status).to eq(404)
+    expect(merchant_data[:error]).to eq("Item not found")
+  end
 end
