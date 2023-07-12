@@ -95,6 +95,37 @@ RSpec.describe "Items API" do
     expect(created_item.merchant_id).to eq(item_params[:merchant_id])
   end
 
+  it "rejects a request to create an item if merchant does not exist" do
+    item_params = ({
+                    name: "Gold Potatoe",
+                    description: "A potatoe made of gold",
+                    unit_price: 99.99,
+                    merchant_id: 1
+                  })
+    
+    headers = {"CONTENT_TYPE" => "application/json"}
+
+    post "/api/v1/items", headers: headers, params: JSON.generate(item: item_params)
+
+    expect(response).to_not be_successful
+    expect(response.status).to eq(404)
+  end
+
+  it "rejects a request to create an item if item data is incomplete" do
+    item_params = ({
+                    name: "Gold Potatoe",
+                    description: "A potatoe made of gold",
+                    merchant_id: create(:merchant).id
+                  })
+    
+    headers = {"CONTENT_TYPE" => "application/json"}
+
+    post "/api/v1/items", headers: headers, params: JSON.generate(item: item_params)
+
+    expect(response).to_not be_successful
+    expect(response.status).to eq(400)
+  end
+
   it "can update an existing item" do
     id = create(:item).id
     previous_name = Item.last.name
@@ -107,6 +138,28 @@ RSpec.describe "Items API" do
     expect(response).to be_successful
     expect(item.name).to_not eq(previous_name)
     expect(item.name).to eq("Silver Potatoe")
+  end
+
+  it "rejects a request to update an item if merchant does not exist" do
+    id = create(:item).id
+
+    item_params = { merchant_id: 1 }
+    headers = {"CONTENT_TYPE" => "application/json"}
+
+    patch "/api/v1/items/#{id}", headers: headers, params: JSON.generate({item: item_params})
+
+    expect(response).to_not be_successful
+    expect(response.status).to eq(404)
+  end
+
+  it "rejects a request to update an item if item does not exist" do
+    item_params = { merchant_id: 1 }
+    headers = {"CONTENT_TYPE" => "application/json"}
+
+    patch "/api/v1/items/1", headers: headers, params: JSON.generate({item: item_params})
+
+    expect(response).to_not be_successful
+    expect(response.status).to eq(404)
   end
 
   it "can destroy an item" do
