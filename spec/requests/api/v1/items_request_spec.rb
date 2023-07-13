@@ -317,5 +317,19 @@ RSpec.describe "Items API", type: :request do
       expect(response).to_not be_successful
       expect(response.status).to eq(400)
     end
+
+    it "rejects a request for an item if min_price is less than 0" do
+      get "/api/v1/items/find_all?min_price=-1"
+
+      expect(response).to_not be_successful
+      expect(response.status).to eq(400)
+    end
+
+    it "rejects a request for an item if max_price is less than 0" do
+      get "/api/v1/items/find_all?max_price=-1"
+
+      expect(response).to_not be_successful
+      expect(response.status).to eq(400)
+    end
   end
 end
