@@ -1,6 +1,6 @@
 class Api::V1::ItemsController < ApplicationController
   before_action :verify_merchant, only: [:create, :update]
-
+  
   def index
     render json: ItemSerializer.new(Item.all)
   end
@@ -10,13 +10,8 @@ class Api::V1::ItemsController < ApplicationController
   end
 
   def create
-    item = Item.new(item_params)
-
-    if item.save
-      render json: ItemSerializer.new(item), status: 201
-    else
-      render json: item.errors, status: 400
-    end
+    item = Item.create!(item_params)
+    render json: ItemSerializer.new(item), status: 201
   end
 
   def update
