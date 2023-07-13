@@ -1,6 +1,8 @@
 class Api::V1::Items::SearchController < ApplicationController
   def index
-    if params[:name] && (params[:min_price] || params[:max_price])
+    if params[:name] && params[:name].empty?
+      render json: {error: "No name provided"}, status: 400
+    elsif params[:name] && (params[:min_price] || params[:max_price])
       render json: {error: "Cannot search by name and price at the same time"}, status: 400
     elsif params[:name]
       items = Item.find_all_by_name(params[:name])
@@ -16,6 +18,8 @@ class Api::V1::Items::SearchController < ApplicationController
     elsif params[:max_price]
       items = Item.find_all_by_max_price(params[:max_price])
       render json: ItemSerializer.new(items)
+    elsif params[:name].nil? && params[:min_price].nil? && params[:max_price].nil?
+      render json: {error: "No search terms provided"}, status: 400
     # else
     #   render json: {error: "No search term provided"}, status: :bad_request
     end

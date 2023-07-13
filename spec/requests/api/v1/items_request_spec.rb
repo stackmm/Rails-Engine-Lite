@@ -331,5 +331,12 @@ RSpec.describe "Items API", type: :request do
       expect(response).to_not be_successful
       expect(response.status).to eq(400)
     end
+
+    it "rejects a request for an item if name and price are empty" do
+      get "/api/v1/items/find_all"
+
+      expect(response).to_not be_successful
+      expect(response.status).to eq(400)
+    end
   end
 end
