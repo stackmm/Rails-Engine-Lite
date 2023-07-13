@@ -13,4 +13,15 @@ class ErrorSerializer
       ]
     }
   end
+
+  def invalid_serialized_json
+    {
+      errors: [
+        {
+          status: 400,
+          title: @error.message
+        }
+      ]
+    }
+  end
 end
