@@ -98,7 +98,9 @@ describe "Merchants API", type: :request do
   
       expect(response).to_not be_successful
       expect(response.status).to eq(404)
-      expect(items[:error]).to eq("Merchant not found")
+      
+      expect(items[:errors][0][:title]).to eq("Couldn't find Merchant with 'id'=1")
+      expect(items[:errors][0][:status]).to eq(404)
     end
   end
 
