@@ -66,4 +66,31 @@ RSpec.describe Item, type: :model do
       end
     end
   end
+
+  describe "instance methods" do
+    describe "#check_delete_invoice" do
+      it "deletes the item's invoice if that item is the only item on the invoice" do
+        merchant = create(:merchant)
+        customer = create(:customer)
+        item1 = create(:item, merchant_id: merchant.id)
+        item2 = create(:item, merchant_id: merchant.id)
+        invoice = Invoice.create!(merchant_id: merchant.id, customer_id: customer.id, status: :active)
+        InvoiceItem.create!(item_id: item1.id, invoice_id: invoice.id, quantity: 1, unit_price: 1.50)
+        InvoiceItem.create!(item_id: item2.id, invoice_id: invoice.id, quantity: 2, unit_price: 2.50)
+        
+        expect(Invoice.count).to eq(1)
+        expect(invoice.items.count).to eq(2)
+
+        item1.check_delete_invoice
+        expect(item1.invoices.count).to eq(1)
+
+        item2.destroy
+        expect(Invoice.count).to eq(1)
+        expect(invoice.items.count).to eq(1)
+
+        item1.check_delete_invoice
+        expect(Invoice.count).to eq(0)
+      end
+    end
+  end
 end

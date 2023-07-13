@@ -1,6 +1,6 @@
 class Item < ApplicationRecord
   belongs_to :merchant
-  has_many :invoice_items
+  has_many :invoice_items, dependent: :destroy
   has_many :invoices, through: :invoice_items
 
   validates_presence_of :name, :description, :unit_price, :merchant_id
@@ -20,5 +20,13 @@ class Item < ApplicationRecord
 
   def self.find_all_by_price_range(price)
     where("unit_price >= ? AND unit_price <= ?", price[0], price[1])
+  end
+
+  def check_delete_invoice
+    invoices.each do |invoice|
+      if invoice.items.count == 1
+        invoice.destroy
+      end
+    end
   end
 end
