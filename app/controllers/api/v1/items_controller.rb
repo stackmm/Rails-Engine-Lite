@@ -19,6 +19,9 @@ class Api::V1::ItemsController < ApplicationController
   end
 
   def destroy
+    item = Item.find(params[:id])
+    item.check_delete_invoice
+
     render json: ItemSerializer.new(Item.destroy(params[:id]))
   end
 

@@ -179,8 +179,29 @@ RSpec.describe "Items API", type: :request do
       delete "/api/v1/items/#{item.id}"
   
       expect(response).to be_successful
+      expect(response.status).to eq(200)
+
       expect(Item.count).to eq(0)
       expect{Item.find(item.id)}.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    it "destroys an invoice if no items remaining" do
+      merchant = create(:merchant)
+      customer = create(:customer)
+      item = create(:item, merchant_id: merchant.id)
+      invoice = item.invoices.create!(merchant_id: merchant.id, customer_id: customer.id, status: :active)
+      
+      expect(Invoice.count).to eq(1)
+      expect(invoice.items.count).to eq(1)
+
+      delete "/api/v1/items/#{item.id}"
+
+      expect(response).to be_successful
+      expect(response.status).to eq(200)
+
+      expect(Item.count).to eq(0)
+      expect(Invoice.count).to eq(0)
+      expect{Invoice.find(invoice.id)}.to raise_error(ActiveRecord::RecordNotFound)
     end
   end
 
