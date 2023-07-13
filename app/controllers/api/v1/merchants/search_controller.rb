@@ -12,6 +12,8 @@ class Api::V1::Merchants::SearchController < ApplicationController
       render json: {error: "No search term provided"}, status: :bad_request
     elsif Merchant.find_by_name(params[:name]).nil?
       render json: {error: "Merchant not found"}, status: 404
+    elsif params[:name].empty?
+      render json: {error: "No name provided"}, status: 400
     else
       return
     end

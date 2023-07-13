@@ -145,5 +145,15 @@ describe "Merchants API", type: :request do
       expect(response).to_not be_successful
       expect(response.status).to eq(400)
     end
+
+    it "rejects a request for a merchant if the name fragment is empty" do
+      merchant1 = create(:merchant, name: "Bob's Burgers")
+      merchant2 = create(:merchant, name: "Walmart")
+
+      get "/api/v1/merchants/find?name="
+
+      expect(response).to_not be_successful
+      expect(response.status).to eq(400)
+    end
   end
 end
