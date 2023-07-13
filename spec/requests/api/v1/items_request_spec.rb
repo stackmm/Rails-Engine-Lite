@@ -284,8 +284,26 @@ RSpec.describe "Items API", type: :request do
       expect(items[:data][2][:attributes][:unit_price]).to eq(item3.unit_price)
     end
 
-    xit "can find all items when searched by min_price AND max_price" do
+    it "can find all items when searched by min_price AND max_price" do
+      item1 = create(:item, unit_price: 1.50)
+      item2 = create(:item, unit_price: 25.20)
+      item3 = create(:item, unit_price: 50.00)
+      item4 = create(:item, unit_price: 55.00)
+      item5 = create(:item, unit_price: 71.00)
+      item6 = create(:item, unit_price: 75.00)
 
+      get "/api/v1/items/find_all?max_price=75&min_price=51"
+
+      expect(response).to be_successful
+      expect(response.status).to eq(200)
+
+      items = JSON.parse(response.body, symbolize_names: true)
+      
+      expect(items[:data]).to be_an(Array)
+      expect(items[:data].count).to eq(3)
+      expect(items[:data][0][:attributes][:unit_price]).to eq(item4.unit_price)
+      expect(items[:data][1][:attributes][:unit_price]).to eq(item5.unit_price)
+      expect(items[:data][2][:attributes][:unit_price]).to eq(item6.unit_price)
     end
   end
 end
