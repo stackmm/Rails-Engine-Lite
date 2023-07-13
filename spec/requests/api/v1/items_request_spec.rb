@@ -111,7 +111,7 @@ RSpec.describe "Items API", type: :request do
       headers = {"CONTENT_TYPE" => "application/json"}
   
       post "/api/v1/items", headers: headers, params: JSON.generate(item: item_params)
-  
+
       expect(response).to_not be_successful
       expect(response.status).to eq(404)
     end
@@ -126,7 +126,7 @@ RSpec.describe "Items API", type: :request do
       headers = {"CONTENT_TYPE" => "application/json"}
   
       post "/api/v1/items", headers: headers, params: JSON.generate(item: item_params)
-  
+                    
       expect(response).to_not be_successful
       expect(response.status).to eq(400)
     end
@@ -219,8 +219,6 @@ RSpec.describe "Items API", type: :request do
     end
   end
 
-  # find all ITEMS (in an array of objects) based on search criteria (case insensitive)
-  # returns a 404 error if no matches are found
   describe "/api/v1/items/find_all" do
     it "can find all items which match a search by name" do
       item1 = create(:item, name: "Gold Potatoe")

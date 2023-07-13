@@ -91,7 +91,7 @@ describe "Merchants API", type: :request do
       end
     end
 
-    it "rejects a request for a merchant's items if the merchant does not exist" do
+    it "rejects a request for a merchant's items if the merchant does not exist" do # done
       get "/api/v1/merchants/1/items"
   
       items = JSON.parse(response.body, symbolize_names: true)
