@@ -298,12 +298,24 @@ RSpec.describe "Items API", type: :request do
       expect(response.status).to eq(200)
 
       items = JSON.parse(response.body, symbolize_names: true)
-      
+
       expect(items[:data]).to be_an(Array)
       expect(items[:data].count).to eq(3)
       expect(items[:data][0][:attributes][:unit_price]).to eq(item4.unit_price)
       expect(items[:data][1][:attributes][:unit_price]).to eq(item5.unit_price)
       expect(items[:data][2][:attributes][:unit_price]).to eq(item6.unit_price)
+    end
+
+    it "rejects a request for an item if both name and price are provided" do
+      get "/api/v1/items/find_all?name=potatoe&max_price=75"
+
+      expect(response).to_not be_successful
+      expect(response.status).to eq(400)
+
+      get "/api/v1/items/find_all?name=potatoe&min_price=75"
+
+      expect(response).to_not be_successful
+      expect(response.status).to eq(400)
     end
   end
 end
