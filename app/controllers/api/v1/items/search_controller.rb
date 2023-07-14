@@ -20,12 +20,6 @@ class Api::V1::Items::SearchController < ApplicationController
       render json: ItemSerializer.new(items)
     elsif params[:name].nil? && params[:min_price].nil? && params[:max_price].nil?
       render json: {error: "No search terms provided"}, status: 400
-    # else
-    #   render json: {error: "No search term provided"}, status: :bad_request
     end
-
-    # sad path for when name, min price, max price are all empty
-    # sad path for when min price is being than all prices in database
-    # sad path for when name and min/max price are being sent
   end
 end
