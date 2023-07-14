@@ -1,24 +1,14 @@
 class ErrorSerializer
-  def initialize(error)
+  def initialize(error, status)
     @error = error
+    @status = status
   end
 
   def serialized_json
     {
       errors: [
         {
-          status: 404,
-          title: @error.message
-        }
-      ]
-    }
-  end
-
-  def invalid_serialized_json
-    {
-      errors: [
-        {
-          status: 400,
+          status: @status,
           title: @error.message
         }
       ]
