@@ -8,7 +8,7 @@ class Api::V1::Items::SearchController < ApplicationController
       items = Item.find_all_by_name(params[:name])
       render json: ItemSerializer.new(items)
     elsif params[:min_price].to_i < 0 || params[:max_price].to_i < 0
-      render json: {error: "Price cannot be less than 0"}, status: 400
+      render json: {errors: "Price cannot be less than 0"}, status: 400
     elsif params[:min_price] && params[:max_price]
       items = Item.find_all_by_price_range([params[:min_price], params[:max_price]])
       render json: ItemSerializer.new(items)
